@@ -21,10 +21,11 @@ Pretty graphs ;)
 # Requirements
 
 - Rated.network API key
+- bash
 - curl
 - jq
-- bash
 - Node Exporter with textprom enabled, e.g. `--collector.textfile.directory=/host/somewhere/node_exporter/textprom/` in your docker command with a mount for `/host`, [read this for details](https://github.com/prometheus/node_exporter#textfile-collector)
+- A working cron implementation
 
 # How
 
@@ -37,12 +38,27 @@ NOTE: Be sure to output to separate files if you want to run hourly/daily/monthl
 Example crontab -e entry
 ```
 # Run hourly job at 55 minutes past the hour
-55 * * * * /path/to/node-raver.sh hourly > /path/to/node_exporter/textprom/raver-hourly.txt
+55 * * * * /path/to/node-raver.sh hourly > /path/to/node_exporter/textprom/raver-hourly.prom
 # Run daily job at 1:55
-45 1 * * * /path/to/node-raver.sh daily > /path/to/node_exporter/textprom/raver-daily.txt
+45 1 * * * /path/to/node-raver.sh daily > /path/to/node_exporter/textprom/raver-daily.prom
 ```
 
 # Result
+
+When setup correctly, you should see /path/to/node_exporter/textprom/raver-hourly.prom appear.
+If not, check permissions and cron logs, (cron should send emails on failures).
+Once this file is present and Node Exporter has been told to enable the textfile directory collector to this path,
+new metrics such as `rated_avg_attester_effectiveness` should appear.
+
+You can make pretty graphs:
+
+![Raver Panel in Grafana](docs/raver-panel.png?raw=true "Grafana Example Raver Panel")
+
+And alert on them. In case of grafana, hit the dots in the top right corner, More => Alert Rule:
+![Raver Alert Rule in Grafana](docs/raver-alert.png?raw=true "Grafana Create Alert Rule")
+- only query what you want to alert on (e.g. `rated_avg_attester_effectiveness{range="1d"}`)
+- set a proper treshold (alert fires when it goes below 95 in this example)
+- make sure the notification goes somewhere, like the rest of your grafana alerts.
 
 # You blew up my machine
 
