@@ -24,6 +24,7 @@ Pretty graphs ;)
 - curl
 - jq
 - bash
+- Node Exporter with textprom enabled, e.g. `--collector.textfile.directory=/host/somewhere/node_exporter/textprom/` in your docker command with a mount for `/host`, [read this for details](https://github.com/prometheus/node_exporter#textfile-collector)
 
 # How
 
@@ -49,7 +50,7 @@ Pretty sure that was you.
 
 In other words:
 No warranty, please read through the script and understand it (at least in broad strokes) before running it.
-It works for me (tm), feel free to fork/copy/clone/adjust as you see fit!
+It works for me (tm), also feel free to fork/copy/clone/adjust as you see fit!
 
 Note that by default you get 100000 API requests on a free account. This script uses 1 per execution.
 If you run it once every hour on hourly, once per day for daily, etc, it result in <1K calls per month.
